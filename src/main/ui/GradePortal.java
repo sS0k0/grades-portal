@@ -1,5 +1,8 @@
 package ui;
 
+import model.Professor;
+import model.Student;
+
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
@@ -13,6 +16,7 @@ public class GradePortal extends JFrame implements ActionListener {
     // JClasses used in the frame
     JPanel logInPanel;
     JTextField userName, password;
+    JCheckBox c1, c2;
 
     public GradePortal() {
         super("portal ui");
@@ -33,38 +37,49 @@ public class GradePortal extends JFrame implements ActionListener {
     // MODIFIES : this
     // EFFECTS: Adds JPanel to prompt the user to login
     public void initializeLogin() {
-        // Create panel
-        logInPanel = new JPanel(new GridLayout(6,1));
+        // panel
+        logInPanel = new JPanel(new GridLayout(8,1));
         add(logInPanel, BorderLayout.CENTER);
 
-        // Create label for username
+        // label for username
         JLabel userNameLabel = new JLabel();
         userNameLabel.setText("Username");
 
-        // Create label for password
+        // label for password
         JLabel passwordLabel = new JLabel();
         passwordLabel.setText("Password");
 
-        // Create textfield to get username from user
+        // textfield to get username from user
         userName = new JTextField(15);
 
-        // Create textfield to get password from user
+        // textfield to get password from user
         password = new JPasswordField(15);
 
-        // Create Login button
+        // Login button
         JButton b1 = new JButton("LOGIN");
         b1.setActionCommand("login");
         b1.addActionListener(this);
 
-        // Create Register button
+        // Register button
         JButton b2 = new JButton("REGISTER");
         b2.setActionCommand("register");
         b2.addActionListener(this);
+
+        // student/professor checkboxes
+        c1 = new JCheckBox("Student");
+        c2 = new JCheckBox("Professor");
+
+        // Button group for checkboxes
+        ButtonGroup group1 = new ButtonGroup();
+        group1.add(c1);
+        group1.add(c2);
 
         logInPanel.add(userNameLabel);
         logInPanel.add(userName);
         logInPanel.add(passwordLabel);
         logInPanel.add(password);
+        logInPanel.add(c1);
+        logInPanel.add(c2);
         logInPanel.add(b1);
         logInPanel.add(b2);
 
@@ -77,13 +92,45 @@ public class GradePortal extends JFrame implements ActionListener {
     }
 
     public void handleLoginAction(ActionEvent e) {
+
+        String userNameString = userName.getText();
+        String passwordString = password.getText();
+
         if (e.getActionCommand().equals("login")) {
-
-            String userNameString = userName.getText();
-            String passwordString = password.getText();
-
+            if (false) { //valid login credentials
+                // proceed to next page
+            } else {
+                JOptionPane.showMessageDialog(this,
+                        "Login credentials not valid, please try again or register.");
+            }
         } else if (e.getActionCommand().equals("register")) {
-            //stub
+            register(userNameString, passwordString);
+            // proceed to next page
         }
     }
+
+    // MODIFIES : this
+    // EFFECTS : Creates a student/professor account for the user with given name and password. saves to JSON
+    public void register(String username, String password) {
+        if (!username.isEmpty() && !password.isEmpty()) {
+            if (true) { // username does not already exist
+                if (c1.isSelected()) {
+                    Student student = new Student(username, password);
+                } else if (c2.isSelected()) {
+                    Professor professor = new Professor(username, password);
+                } else {
+                    JOptionPane.showMessageDialog(this,
+                            "Please select either student or professor");
+                }
+            } else {
+                JOptionPane.showMessageDialog(this,
+                        "This username is taken");
+            }
+        } else {
+            JOptionPane.showMessageDialog(this,
+                    "Please input desired username and password into fields");
+        }
+
+    }
+
 }
