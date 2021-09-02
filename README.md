@@ -13,7 +13,7 @@ way in the portal.
 
 ## User stories     
 
-- As a user, I want to be able to login with a professor id and password and load my data
-- As a user, I want to be able to login with a student id and password and load my data
+- As a user, I want to be able to login with a professor id and password 
+- As a user, I want to be able to login with a student id and password 
 - As a user, I want to be able to create an account with either a professor or student id and password
 - As a user, I want to be able to quit out of the application and have my changes saved if selected

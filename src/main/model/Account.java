@@ -2,7 +2,7 @@ package model;
 
 import java.util.List;
 
-public class Account {
+public abstract class Account {
 
     protected String name;
     protected String password;
