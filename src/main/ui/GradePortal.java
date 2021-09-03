@@ -1,17 +1,32 @@
 package ui;
 
+import model.Account;
 import model.Professor;
 import model.Student;
+import org.json.JSONObject;
+import persistence.JsonReader;
+import persistence.JsonWriter;
+import persistence.Writable;
 
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.FileNotFoundException;
+import java.util.ArrayList;
+import java.util.List;
 
 public class GradePortal extends JFrame implements ActionListener {
 
     public static final int WIDTH = 1500;
     public static final int HEIGHT = 800;
+    private JsonWriter jsonWriter;
+    private JsonReader jsonReader;
+
+    private static final String JSON_STORE = "./data/accounts.json";
+
+    // Data
+    private List<Account> accounts = new ArrayList<>();
 
     // JClasses used in the frame
     JPanel logInPanel;
@@ -21,6 +36,8 @@ public class GradePortal extends JFrame implements ActionListener {
     public GradePortal() {
         super("portal ui");
         initializeGraphics();
+        jsonWriter = new JsonWriter(JSON_STORE);
+        jsonReader = new JsonReader(JSON_STORE);
     }
 
     // MODIFIES : this
@@ -100,10 +117,24 @@ public class GradePortal extends JFrame implements ActionListener {
 
     // MODIFIES : this
     // EFFECTS : Handles event where user quits
-    public void quit(ActionEvent e) {
+    private void quit(ActionEvent e) {
         if (e.getActionCommand().equals("quit")) {
+            saveAccounts();
             System.exit(0);
         }
+    }
+
+    // MODIFIES : JSON data
+    // EFFECTS : Saves accounts to JSON file
+    private void saveAccounts() {
+        try {
+            jsonWriter.open();
+            jsonWriter.write(accounts);
+            jsonWriter.close();
+        } catch (FileNotFoundException e) {
+            // ignore
+        }
+
     }
 
     // MODIFIES : this
@@ -133,9 +164,11 @@ public class GradePortal extends JFrame implements ActionListener {
             if (true) { // username does not already exist
                 if (c1.isSelected()) {
                     Student student = new Student(username, password);
+                    accounts.add(student);
                     // proceed to next page
                 } else if (c2.isSelected()) {
                     Professor professor = new Professor(username, password);
+                    accounts.add(professor);
                     // proceed to next page
                 } else {
                     JOptionPane.showMessageDialog(this,
@@ -151,5 +184,4 @@ public class GradePortal extends JFrame implements ActionListener {
         }
 
     }
-
 }
