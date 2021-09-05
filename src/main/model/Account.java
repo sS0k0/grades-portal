@@ -18,6 +18,16 @@ public abstract class Account implements Writable {
         this.password = password;
     }
 
+    // EFFECTS : returns name attached to Account
+    public String getName() {
+        return this.name;
+    }
+
+    // EFFECTS : returns password attached to Account
+    public String getPassword() {
+        return this.password;
+    }
+
     @Override
     public JSONObject toJson() {
         JSONObject json = new JSONObject();

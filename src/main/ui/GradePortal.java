@@ -3,10 +3,8 @@ package ui;
 import model.Account;
 import model.Professor;
 import model.Student;
-import org.json.JSONObject;
 import persistence.JsonReader;
 import persistence.JsonWriter;
-import persistence.Writable;
 
 import javax.swing.*;
 import java.awt.*;
@@ -156,23 +154,35 @@ public class GradePortal extends JFrame implements ActionListener {
         String passwordString = password.getText();
 
         if (e.getActionCommand().equals("login")) {
-            if (false) { //valid login credentials
-                // proceed to next page
+            if (validLogin(userNameString, passwordString)) {
+                removeAll();
+                // load next panels
             } else {
                 JOptionPane.showMessageDialog(this,
                         "Login credentials not valid, please try again or register.");
             }
         } else if (e.getActionCommand().equals("register")) {
             register(userNameString, passwordString);
-            // proceed to next page
+            removeAll();
+            // load next panels
         }
+    }
+
+    // EFFECTS : returns true if textfield username and password matches existing account
+    private boolean validLogin(String username, String password) {
+        for (Account account : accounts) {
+            if (username.equals(account.getName()) && password.equals(account.getPassword())) {
+                return true;
+            }
+        }
+        return false;
     }
 
     // MODIFIES : this
     // EFFECTS : Creates a student/professor account for the user with given name and password. saves to JSON
     public void register(String username, String password) {
         if (!username.isEmpty() && !password.isEmpty()) {
-            if (true) { // username does not already exist
+            if (userNameNotTaken(username)) {
                 if (c1.isSelected()) {
                     Student student = new Student(username, password);
                     accounts.add(student);
@@ -194,5 +204,15 @@ public class GradePortal extends JFrame implements ActionListener {
                     "Please input desired username and password into fields");
         }
 
+    }
+
+    // EFFECTS : return true if username is not already taken by existing Accounts
+    private boolean userNameNotTaken(String username) {
+        for (Account account : accounts) {
+            if (username.equals(account.getName())) {
+                return false;
+            }
+        }
+        return true;
     }
 }
