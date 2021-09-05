@@ -1,6 +1,7 @@
 package persistence;
 
 import model.Account;
+import org.json.JSONArray;
 import org.json.JSONObject;
 
 import java.io.File;
@@ -32,10 +33,14 @@ public class JsonWriter {
     // MODIFIES: this
     // EFFECTS: writes JSON representation of accounts to file
     public void write(List<Account> accounts) {
+        JSONObject json = new JSONObject();
+        JSONArray jsonArray = new JSONArray();
         for(Account account : accounts) {
-            JSONObject json = account.toJson();
-            saveToFile(json.toString(TAB));
+            JSONObject jsonAccount = account.toJson();
+            jsonArray.put(jsonAccount);
         }
+        json.put("accounts", jsonArray);
+        saveToFile(json.toString(TAB));
     }
 
     // MODIFIES: this

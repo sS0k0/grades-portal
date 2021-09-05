@@ -13,6 +13,7 @@ import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -38,6 +39,7 @@ public class GradePortal extends JFrame implements ActionListener {
         initializeGraphics();
         jsonWriter = new JsonWriter(JSON_STORE);
         jsonReader = new JsonReader(JSON_STORE);
+        loadAccounts();
     }
 
     // MODIFIES : this
@@ -134,7 +136,16 @@ public class GradePortal extends JFrame implements ActionListener {
         } catch (FileNotFoundException e) {
             // ignore
         }
+    }
 
+    // MODIFIES : this
+    // EFFECTS : loads accounts from file
+    private void loadAccounts() {
+        try {
+            accounts = jsonReader.read();
+        } catch (IOException e) {
+            // ignore
+        }
     }
 
     // MODIFIES : this

@@ -1,0 +1,20 @@
+{"accounts": [
+    {
+        "courses": [],
+        "password": "234234GHsa",
+        "role": "professor",
+        "username": "safdsadf"
+    },
+    {
+        "courses": [],
+        "password": "234234asdfasdfasdf",
+        "role": "student",
+        "username": "asdfasdfasdfasdfasdfsadf"
+    },
+    {
+        "courses": [],
+        "password": "234234asdfasdfasdf",
+        "role": "professor",
+        "username": "soko"
+    }
+]}

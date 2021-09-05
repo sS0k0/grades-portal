@@ -24,6 +24,7 @@ public abstract class Account implements Writable {
         json.put("username", name);
         json.put("password", password);
         json.put("role", role);
+        json.put("courses", courses);
         return json;
     }
 }
