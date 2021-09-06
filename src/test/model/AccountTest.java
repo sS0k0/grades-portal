@@ -28,4 +28,10 @@ public class AccountTest {
         assertEquals("123rew", testProfessor.getPassword());
     }
 
+    @Test
+    void testGetRole() {
+        assertEquals("student", testStudent.getRole());
+        assertEquals("professor", testProfessor.getRole());
+    }
+
 }

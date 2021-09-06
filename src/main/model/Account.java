@@ -28,6 +28,11 @@ public abstract class Account implements Writable {
         return this.password;
     }
 
+    // EFFECTS : returns role attached to Account
+    public String getRole() {
+        return this.role;
+    }
+
     @Override
     public JSONObject toJson() {
         JSONObject json = new JSONObject();

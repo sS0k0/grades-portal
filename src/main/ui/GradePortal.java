@@ -28,7 +28,7 @@ public class GradePortal extends JFrame implements ActionListener {
     private List<Account> accounts = new ArrayList<>();
 
     // JClasses used in the frame
-    JPanel logInPanel;
+    JPanel logInPanel, studentPanel;
     JTextField userName, password;
     JCheckBox c1, c2;
 
@@ -156,26 +156,40 @@ public class GradePortal extends JFrame implements ActionListener {
         if (e.getActionCommand().equals("login")) {
             if (validLogin(userNameString, passwordString)) {
                 removeAll();
-                // load next panels
+                if (c1.isSelected()) {
+                    loadStudentPage();
+                } else if (c2.isSelected()) {
+                    loadProfessorPage();
+                }
             } else {
                 JOptionPane.showMessageDialog(this,
                         "Login credentials not valid, please try again or register.");
             }
         } else if (e.getActionCommand().equals("register")) {
             register(userNameString, passwordString);
-            removeAll();
-            // load next panels
         }
     }
 
-    // EFFECTS : returns true if textfield username and password matches existing account
+    // EFFECTS : returns true if textfield username and password matches existing account, false otherwise
     private boolean validLogin(String username, String password) {
         for (Account account : accounts) {
-            if (username.equals(account.getName()) && password.equals(account.getPassword())) {
+            if (username.equals(account.getName()) && password.equals(account.getPassword())
+            && validRole(account)) {
                 return true;
             }
         }
         return false;
+    }
+
+    // EFFECTS : returns true if user checkbox selection for role matches database, false otherwise
+    private boolean validRole(Account account) {
+        if (c1.isSelected()) {
+            return account.getRole().equals("student");
+        } else if (c2.isSelected()) {
+            return account.getRole().equals("professor");
+        } else {
+            return false;
+        }
     }
 
     // MODIFIES : this
@@ -186,11 +200,13 @@ public class GradePortal extends JFrame implements ActionListener {
                 if (c1.isSelected()) {
                     Student student = new Student(username, password);
                     accounts.add(student);
-                    // proceed to next page
+                    removeAll();
+                    loadStudentPage();
                 } else if (c2.isSelected()) {
                     Professor professor = new Professor(username, password);
                     accounts.add(professor);
-                    // proceed to next page
+                    removeAll();
+                    loadProfessorPage();
                 } else {
                     JOptionPane.showMessageDialog(this,
                             "Please select either student or professor");
@@ -204,6 +220,27 @@ public class GradePortal extends JFrame implements ActionListener {
                     "Please input desired username and password into fields");
         }
 
+    }
+
+    // MODIFIES : this
+    // EFFECTS : loads user interface for a student account
+    private void loadStudentPage() {
+        // panel
+        studentPanel = new JPanel(new GridLayout(2, 1));
+        add(studentPanel, BorderLayout.CENTER);
+
+        // labels
+        JLabel courseRegLabel = new JLabel();
+        courseRegLabel.setText("COURSE REGISTRATION");
+        JLabel courseGradesLabel = new JLabel();
+        courseGradesLabel.setText("VIEW COURSE GRADES");
+
+    }
+
+    // MODIFIES : this
+    // EFFECTS : loads user interface for a professor account
+    private void loadProfessorPage() {
+        // do nothing
     }
 
     // EFFECTS : return true if username is not already taken by existing Accounts
