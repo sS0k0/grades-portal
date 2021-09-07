@@ -28,7 +28,7 @@ public class GradePortal extends JFrame implements ActionListener {
     private List<Account> accounts = new ArrayList<>();
 
     // JClasses used in the frame
-    JPanel logInPanel, studentPanel;
+    JPanel logInPanel, studentPanel, professorPanel;
     JTextField userName, password;
     JCheckBox c1, c2;
 
@@ -113,6 +113,34 @@ public class GradePortal extends JFrame implements ActionListener {
     public void actionPerformed(ActionEvent e) {
         handleLoginAction(e);
         quit(e);
+        handleStudentAction(e);
+        handleProfessorAction(e);
+    }
+
+    // MODIFIES : this
+    // EFFECTS : Handles button click event by student account
+    private void handleStudentAction(ActionEvent e) {
+        if (e.getActionCommand().equals("courseRegister")) {
+            // Register course UI
+        } else if (e.getActionCommand().equals("courseDrop")) {
+            // Drop a course UI
+        } else if (e.getActionCommand().equals("courseView")) {
+            // Display courses
+        }
+    }
+
+    // MODIFIES : this
+    // EFFECTS : Handles button click event by professor account
+    private void handleProfessorAction(ActionEvent e) {
+        if (e.getActionCommand().equals("courseCreate")) {
+            // Create course UI
+        } else if (e.getActionCommand().equals("courseEdit")) {
+            // Edit course UI
+        } else if (e.getActionCommand().equals("courseClose")) {
+            // Close course UI
+        } else if (e.getActionCommand().equals("courseProfessorView")) {
+            // Display courses (professor version)
+        }
     }
 
     // MODIFIES : this
@@ -155,7 +183,8 @@ public class GradePortal extends JFrame implements ActionListener {
 
         if (e.getActionCommand().equals("login")) {
             if (validLogin(userNameString, passwordString)) {
-                removeAll();
+                getContentPane().removeAll();
+                repaint();
                 if (c1.isSelected()) {
                     loadStudentPage();
                 } else if (c2.isSelected()) {
@@ -200,12 +229,14 @@ public class GradePortal extends JFrame implements ActionListener {
                 if (c1.isSelected()) {
                     Student student = new Student(username, password);
                     accounts.add(student);
-                    removeAll();
+                    getContentPane().removeAll();
+                    repaint();
                     loadStudentPage();
                 } else if (c2.isSelected()) {
                     Professor professor = new Professor(username, password);
                     accounts.add(professor);
-                    removeAll();
+                    getContentPane().removeAll();
+                    repaint();
                     loadProfessorPage();
                 } else {
                     JOptionPane.showMessageDialog(this,
@@ -226,21 +257,64 @@ public class GradePortal extends JFrame implements ActionListener {
     // EFFECTS : loads user interface for a student account
     private void loadStudentPage() {
         // panel
-        studentPanel = new JPanel(new GridLayout(2, 1));
+        studentPanel = new JPanel(new GridLayout(4, 1));
         add(studentPanel, BorderLayout.CENTER);
 
-        // labels
-        JLabel courseRegLabel = new JLabel();
-        courseRegLabel.setText("COURSE REGISTRATION");
-        JLabel courseGradesLabel = new JLabel();
-        courseGradesLabel.setText("VIEW COURSE GRADES");
+        // buttons
+        JButton courseReg = new JButton("REGISTER FOR A COURSE");
+        courseReg.setActionCommand("courseRegister");
+        courseReg.addActionListener(this);
+        JButton courseDrop = new JButton("DROP A COURSE");
+        courseDrop.setActionCommand("courseDrop");
+        courseDrop.addActionListener(this);
+        JButton courseView = new JButton("VIEW MY COURSES");
+        courseView.setActionCommand("courseView");
+        courseView.addActionListener(this);
+        // Quit button
+        JButton b3 = new JButton("QUIT");
+        b3.setActionCommand("quit");
+        b3.addActionListener(this);
 
+        studentPanel.add(courseReg);
+        studentPanel.add(courseDrop);
+        studentPanel.add(courseView);
+        studentPanel.add(b3);
+
+        setVisible(true);
     }
 
     // MODIFIES : this
     // EFFECTS : loads user interface for a professor account
     private void loadProfessorPage() {
-        // do nothing
+        // panel
+        professorPanel = new JPanel(new GridLayout(5, 1));
+        add(professorPanel, BorderLayout.CENTER);
+
+        // buttons
+        JButton courseCreate = new JButton("CREATE A COURSE");
+        courseCreate.setActionCommand("courseCreate");
+        courseCreate.addActionListener(this);
+        JButton courseEdit = new JButton("EDIT A COURSE");
+        courseEdit.setActionCommand("courseEdit");
+        courseEdit.addActionListener(this);
+        JButton courseClose = new JButton("CLOSE A COURSE");
+        courseClose.setActionCommand("courseClose");
+        courseClose.addActionListener(this);
+        JButton courseProfessorView = new JButton("VIEW MY COURSES");
+        courseProfessorView.setActionCommand("courseProfessorView");
+        courseProfessorView.addActionListener(this);
+        // Quit button
+        JButton b3 = new JButton("QUIT");
+        b3.setActionCommand("quit");
+        b3.addActionListener(this);
+
+        professorPanel.add(courseCreate);
+        professorPanel.add(courseEdit);
+        professorPanel.add(courseClose);
+        professorPanel.add(courseProfessorView);
+        professorPanel.add(b3);
+
+        setVisible(true);
     }
 
     // EFFECTS : return true if username is not already taken by existing Accounts
