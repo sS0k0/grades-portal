@@ -9,4 +9,11 @@ public class Professor extends Account{
         this.role = "professor";
     }
 
+    @Override
+    public void addCourse(Course course) {
+        if (!courses.contains(course)) {
+            courses.add(course);
+        }
+    }
+
 }

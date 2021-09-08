@@ -1,17 +1,20 @@
 package ui;
 
 import model.Account;
+import model.Course;
 import model.Professor;
 import model.Student;
 import persistence.JsonReader;
 import persistence.JsonWriter;
 
 import javax.swing.*;
+import javax.swing.text.NumberFormatter;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.text.NumberFormat;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -26,10 +29,13 @@ public class GradePortal extends JFrame implements ActionListener {
 
     // Data
     private List<Account> accounts = new ArrayList<>();
+    private Student studentUser;
+    private Professor professorUser;
 
     // JClasses used in the frame
-    JPanel logInPanel, studentPanel, professorPanel;
-    JTextField userName, password;
+    JPanel logInPanel, studentPanel, professorPanel, courseRegPanel;
+    JTextField userName, password, courseName;
+    JFormattedTextField courseId;
     JCheckBox c1, c2;
 
     public GradePortal() {
@@ -121,11 +127,38 @@ public class GradePortal extends JFrame implements ActionListener {
     // EFFECTS : Handles button click event by student account
     private void handleStudentAction(ActionEvent e) {
         if (e.getActionCommand().equals("courseRegister")) {
-            // Register course UI
+            getContentPane().removeAll();
+            repaint();
+            registerCourse();
+            handleCourseRegAction(e);
         } else if (e.getActionCommand().equals("courseDrop")) {
             // Drop a course UI
         } else if (e.getActionCommand().equals("courseView")) {
             // Display courses
+        }
+    }
+
+    // MODIFIES : this
+    // EFFECTS : Handles action events when a student is registering for a course
+    private void handleCourseRegAction(ActionEvent e) {
+        if (e.getActionCommand().equals("menu")) {
+            getContentPane().removeAll();
+            repaint();
+            loadStudentPage();
+        } else if (e.getActionCommand().equals("courseRegSubmit")) {
+            for (Account account : accounts) {
+                for (Course course : account.getCourses()) {
+                    int courseIdInt = (Integer) courseId.getValue();
+                    if (courseIdInt == course.getId()) {
+                        course.addStudent(studentUser);
+                    }
+                }
+            }
+                getContentPane().removeAll();
+                repaint();
+                loadStudentPage();
+                JOptionPane.showMessageDialog(this,
+                        "You have been registered for " + courseName + courseId);
         }
     }
 
@@ -150,6 +183,48 @@ public class GradePortal extends JFrame implements ActionListener {
             saveAccounts();
             System.exit(0);
         }
+    }
+
+    // MODIFIES : this
+    // EFFECTS : Creates UI for a student to register for a course
+    private void registerCourse() {
+        // panel
+        courseRegPanel = new JPanel(new GridLayout(6,1));
+        add(courseRegPanel, BorderLayout.CENTER);
+
+        // labels
+        JLabel courseNameLabel = new JLabel();
+        courseNameLabel.setText("Input course name");
+        JLabel courseIdLabel = new JLabel();
+        courseIdLabel.setText("Input course Id");
+
+        // Input fields
+        courseName = new JTextField(15);
+
+        NumberFormat format = NumberFormat.getInstance();
+        NumberFormatter formatter = new NumberFormatter(format);
+        formatter.setValueClass(Integer.class);
+        formatter.setMinimum(0);
+        formatter.setAllowsInvalid(false);
+        courseId = new JFormattedTextField(formatter);
+
+        // Back to menu button
+        JButton menu = new JButton("RETURN TO MENU");
+        menu.setActionCommand("menu");
+        menu.addActionListener(this);
+
+        JButton submit = new JButton("SUBMIT");
+        submit.setActionCommand("courseRegSubmit");
+        submit.addActionListener(this);
+
+        courseRegPanel.add(courseNameLabel);
+        courseRegPanel.add(courseName);
+        courseRegPanel.add(courseIdLabel);
+        courseRegPanel.add(courseId);
+        courseRegPanel.add(submit);
+        courseRegPanel.add(menu);
+
+        setVisible(true);
     }
 
     // MODIFIES : JSON data
@@ -200,10 +275,16 @@ public class GradePortal extends JFrame implements ActionListener {
     }
 
     // EFFECTS : returns true if textfield username and password matches existing account, false otherwise
+    //
     private boolean validLogin(String username, String password) {
         for (Account account : accounts) {
             if (username.equals(account.getName()) && password.equals(account.getPassword())
             && validRole(account)) {
+                if (account instanceof Student) {
+                    studentUser = (Student) account;
+                } else {
+                    professorUser = (Professor) account;
+                }
                 return true;
             }
         }
@@ -229,12 +310,14 @@ public class GradePortal extends JFrame implements ActionListener {
                 if (c1.isSelected()) {
                     Student student = new Student(username, password);
                     accounts.add(student);
+                    studentUser = student;
                     getContentPane().removeAll();
                     repaint();
                     loadStudentPage();
                 } else if (c2.isSelected()) {
                     Professor professor = new Professor(username, password);
                     accounts.add(professor);
+                    professorUser = professor;
                     getContentPane().removeAll();
                     repaint();
                     loadProfessorPage();
